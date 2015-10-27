@@ -272,6 +272,7 @@ describe('AllocationFactory', function() {
     it('fail approving an allocation', function() {
         var response = {
             status: 'error',
+            messages: ['some error message.'],
             result: null
         };
         var allocation = projects[0].allocations[0];
@@ -282,6 +283,6 @@ describe('AllocationFactory', function() {
         $httpBackend.verifyNoOutstandingExpectation();
         $httpBackend.verifyNoOutstandingRequest();
         expect(NotificationFactory.getMessages().approveAllocation1[0].body).toEqual(
-            'There was an error approving this allocation. Please try again or file a ticket if this seems persistent.');
+            response.messages[0]);
     });
 });

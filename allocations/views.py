@@ -86,7 +86,7 @@ def user_projects( request, username ):
 @user_passes_test(allocation_admin_or_superuser, login_url='/admin/allocations/denied/')
 def approval( request ):
     resp = {}
-    errors = {}
+    errors = []
     status = ''
     if request.POST:
         tas = TASClient()
@@ -95,96 +95,95 @@ def approval( request ):
         data['reviewer'] = userData['username']
         data['reviewerId'] = userData['id']
         logger.info( 'Allocation approval requested by admin: %s', request.user )
-        logger.info( 'Allocation approval request data: %s', json.dumps( data ) )
         validate_datestring = validators.RegexValidator( '^\d{4}-\d{2}-\d{2}$' )
         validate_datetimestring = validators.RegexValidator( '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$' )
         if not data['decisionSummary']:
-            errors['decisionSummary'] = 'Decision Summary is required.'
+            errors.append('Decision Summary is required.')
 
         if not data['status']:
-            errors['status'] = 'Status is required. '
+            errors.append('Status is required. ')
         elif not data['status'] in ['Pending', 'pending', 'Approved', 'approved', 'Rejected', 'rejected']:
-            errors['status'] = 'Status must be "Pending", "pending", "Approved", "approved", "Rejected", "rejected"'
+            errors.append('Status must be "Pending", "pending", "Approved", "approved", "Rejected", "rejected"')
         else:
             if data['start']:
                 try:
                     validate_datestring( data['start'] )
                 except ValidationError:
-                    errors['start'] = 'Start date must be a valid date string e.g. "2015-05-20" .'
+                    errors.append('Start date must be a valid date string e.g. "2015-05-20" .')
             elif data['status'].lower() == 'approved':
-                 errors['start'] = 'Start date is required.'
+                 errors.append('Start date is required.')
 
             if data['end']:
                 try:
                     validate_datestring( data['end'] )
                 except ValidationError:
-                    errors['end'] = 'Start date must be a valid date string e.g. "2015-05-20" .'
+                    errors.append('Start date must be a valid date string e.g. "2015-05-20" .')
             elif data['status'].lower() == 'approved':
-                 errors['end'] = 'Start date is required.'
+                 errors.append('Start date is required.')
 
         if data['computeAllocated']:
             try:
-                data['computeAllocated'] = int( data['computeAllocated'] )
+                data['computeAllocated'] = round(float( data['computeAllocated'] ), 2)
             except ValueError:
-                errors['computeAllocated'] = 'Compute Allocated must be a number.'
+                errors.append('Compute Allocated must be a number.')
 
         if data['computeRequested']:
             try:
-                data['computeRequested'] = int( data['computeRequested'] )
+                data['computeRequested'] = round(float( data['computeRequested'] ), 2)
             except ValueError:
-                errors['computeRequested'] = 'Compute Requested must be a number.'
+                errors.append('Compute Requested must be a number.')
 
         if data['storageAllocated']:
             try:
-                data['storageAllocated'] = int( data['storageAllocated'] )
+                data['storageAllocated'] = round(float( data['storageAllocated'] ), 2)
             except ValueError:
-                errors['storageAllocated'] = 'Storage Allocated must be a number.'
+                errors.append('Storage Allocated must be a number.')
 
         if data['storageRequested']:
             try:
-                data['storageRequested'] = int( data['storageRequested'] )
+                data['storageRequested'] = round(float( data['storageRequested'] ), 2)
             except ValueError:
-                errors['storageRequested'] = 'Storage Requested must be a number.'
+                errors.append('Storage Requested must be a number.')
 
         if data['memoryAllocated']:
             try:
-                data['memoryAllocated'] = int( data['memoryAllocated'] )
+                data['memoryAllocated'] = round(float( data['memoryAllocated'] ), 2)
             except ValueError:
-                errors['memoryAllocated'] = 'Memory Allocated must be a number.'
+                errors.append('Memory Allocated must be a number.')
 
         if data['memoryRequested']:
             try:
-                data['memoryRequested'] = int( data['memoryRequested'] )
+                data['memoryRequested'] = round(float( data['memoryRequested'] ), 2)
             except ValueError:
-                errors['memoryRequested'] = 'Memory Requested must be a number.'
+                errors.append('Memory Requested must be a number.')
 
         if data['projectId']:
             try:
                 data['projectId'] = int( data['projectId'] )
             except ValueError:
-                errors['projectId'] = 'Project id must be number.'
+                errors.append('Project id must be number.')
         else:
             errors['projectId'] = 'Project id is required.'
 
         if not data['project']:
-            errors['project'] = 'Project charge code is required.'
+            errors.append('Project charge code is required.')
 
         if data['reviewerId']:
             try:
                 data['reviewerId'] = int( data['reviewerId'] )
             except ValueError:
-                errors['reviewerId'] = 'Reviewer id must be number.'
+                errors.append('Reviewer id must be number.')
         else:
-            errors['reviewerId'] = 'Reviewer id is required.'
+            errors.append('Reviewer id is required.')
 
         if not data['reviewer']:
-            errors['reviewer'] = 'Reviewer username is required.'
+            errors.append('Reviewer username is required.')
 
         if data['dateRequested']:
             try:
                 validate_datetimestring(data['dateRequested'])
             except ValidationError:
-                errors['dateRequested'] = 'Requested date must be a valid date string e.g. "2015-05-20T05:00:00Z" .'
+                errors.append('Requested date must be a valid date string e.g. "2015-05-20T05:00:00Z" .')
         #else:
         #     errors['dateRequested'] = 'Requested date is required.'
 
@@ -192,24 +191,24 @@ def approval( request ):
             try:
                 validate_datestring( data['dateReviewed'] )
             except ValidationError:
-                errors['dateReviewed'] = 'Reviewed date must be a valid date string e.g. "2015-05-20" .'
+                errors.append('Reviewed date must be a valid date string e.g. "2015-05-20" .')
         else:
-             errors['dateReviewed'] = 'Reviewed date is required.'
+             errors.append('Reviewed date is required.')
         if len( errors ) == 0:
             # source
             data['source'] = 'Chameleon'
 
             # log the request
             logger.info( 'Request data passed validation. Calling TAS ...')
-
+            logger.info( 'Allocation approval request data: %s', json.dumps( data ) )
             try:
                 resp['result'] = tas.allocation_approval( data['id'], data )
                 logger.info('Allocation approval TAS response: data=%s', json.dumps(resp['result']))
                 status = 'success'
             except Exception as e:
-                logger.exception('Error processing allocation approval.')
+                logger.exception('Error processing allocation approval.', e.args[1])
                 status = 'error'
-                errors['message'] = 'An unexpected error occurred. If this problem persists please create a help ticket.'
+                errors.append(e.args[1])
 
         else:
             logger.info( 'Request data failed validation. %s', errors.values())
@@ -217,9 +216,9 @@ def approval( request ):
 
     else:
         status = 'error'
-        errors['message'] = 'Only POST method allowed.'
+        errors.append('Only POST method allowed.')
     resp['status'] = status
-    resp['errors'] = errors
+    resp['messages'] = errors
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 def allocations_template(request, resource):

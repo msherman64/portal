@@ -5,8 +5,11 @@
 angular.module('allocationsApp')
     .controller('modalController', ['$scope', '$modalInstance', '$timeout', 'data', function modalController($scope, $modalInstance, $timeout, data) {
         $scope.data = data;
-        $scope.ok = function() {
-            $modalInstance.close(data);
+        $scope.ok = function(modalForm) {
+            modalForm.$dirty = true;
+            if(!modalForm.$invalid){
+                $modalInstance.close(data);
+            }
         };
 
         $scope.cancel = function() {

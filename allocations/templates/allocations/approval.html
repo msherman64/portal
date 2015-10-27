@@ -24,45 +24,48 @@
                 <td><strong>Date&nbsp;Requested:</strong></td>
                 <td>[[data.allocation.dateRequested | date:'MM/dd/yyyy']]</td>
             </tr>
-            <tr ng-show="data.allocation.computeRequested && data.allocation.computeRequested > 0">
+            <tr ng-if="data.allocation.computeRequested && data.allocation.computeRequested > 0">
                 <td><strong>Compute Requested:</strong></td>
                 <td>[[data.allocation.computeRequested]]</td>
             </tr>
-            <tr ng-show="data.allocation.computeRequested && data.allocation.computeRequested > 0 && data.type == 'approve'">
+            <tr ng-if="data.allocation.computeRequested && data.allocation.computeRequested > 0 && data.type == 'approve'">
                 <td><strong>Compute Allocated:</strong>&nbsp;<sup><i style="color: red;font-size:0.5em;" class="fa fa-asterisk"></i></sup></td>
                 <td>
-                    <input type="number" name="computeAllocated" ng-model="data.allocation.computeAllocated" ng-required="true" value=''>
-                    <div style="color:red" ng-show="modalForm.computeAllocated.$dirty && modalForm.computeAllocated.$invalid">
+                    <input type="number" name="computeAllocated" ng-model="data.allocation.computeAllocated" ng-required="true" min="0.01">
+                    <div style="color:red" ng-show="modalForm.$dirty && modalForm.computeAllocated.$invalid">
                         <div ng-show="modalForm.computeAllocated.$error.required && !modalForm.computeAllocated.$error.number">Compute Allocated is required.</div>
                         <div ng-show="modalForm.computeAllocated.$error.number">Compute Allocated must be a number.</div>
+                        <div ng-show="modalForm.computeAllocated.$error.min">Compute Allocated must be greater than 0.</div>
                     </div>
                 </td>
             </tr>
-            <tr ng-show="data.allocation.storageRequested && data.allocation.storageRequested > 0">
+            <tr ng-if="data.allocation.storageRequested && data.allocation.storageRequested > 0">
                 <td><strong>Storage Requested:</strong></td>
                 <td>[[data.allocation.storageRequested]]</td>
             </tr>
-            <tr ng-show="data.allocation.storageRequested && data.allocation.storageRequested > 0 && data.type == 'approve'">
+            <tr ng-if="data.allocation.storageRequested && data.allocation.storageRequested > 0 && data.type == 'approve'">
                 <td><strong>Storage Allocated:</strong>&nbsp;<sup><i style="color: red;font-size:0.5em;" class="fa fa-asterisk"></i></sup></td>
                 <td>
-                    <input type="number" name="storageAllocated" ng-model="data.allocation.storageAllocated" ng-required="true">
-                    <div style="color:red" ng-show="modalForm.storageAllocated.$dirty && modalForm.storageAllocated.$invalid">
+                    <input type="number" name="storageAllocated" ng-model="data.allocation.storageAllocated" ng-required="true" min="0.01">
+                    <div style="color:red" ng-show="modalForm.$dirty && modalForm.storageAllocated.$invalid">
                         <div ng-show="modalForm.storageAllocated.$error.required && !modalForm.storageAllocated.$error.number">Storage Allocated is required.</div>
                         <div ng-show="modalForm.storageAllocated.$error.number">Storage Allocated must be a number.</div>
+                        <div ng-show="modalForm.storageAllocated.$error.min">Storage Allocated must be greater than 0.</div>
                     </div>
                 </td>
             </tr>
-            <tr ng-show="data.allocation.memoryRequested && data.allocation.memoryRequested > 0">
+            <tr ng-if="data.allocation.memoryRequested && data.allocation.memoryRequested > 0">
                 <td><strong>Memory Requested:</strong></td>
                 <td>[[data.allocation.memoryRequested]]</td>
             </tr>
-            <tr ng-show="data.allocation.memoryRequested && data.allocation.memoryRequested > 0 && data.type == 'approve'">
+            <tr ng-if="data.allocation.memoryRequested && data.allocation.memoryRequested > 0 && data.type == 'approve'">
                 <td><strong>Memory Allocated:</strong>&nbsp;<sup><i style="color: red;font-size:0.5em;" class="fa fa-asterisk"></i></sup></td>
                 <td>
-                    <input type="number" name="memoryAllocated" ng-model="data.allocation.memoryAllocated" ng-required="true">
-                    <div style="color:red" ng-show="modalForm.memoryAllocated.$dirty && modalForm.memoryAllocated.$invalid">
+                    <input type="number" name="memoryAllocated" ng-model="data.allocation.memoryAllocated" ng-required="true" min="0.01">
+                    <div style="color:red" ng-show="modalForm.$dirty && modalForm.memoryAllocated.$invalid">
                         <div ng-show="modalForm.memoryAllocated.$error.required && !modalForm.memoryAllocated.$error.number">Memory Allocated is required.</div>
                         <div ng-show="modalForm.memoryAllocated.$error.number">Memory Allocated must be a number.</div>
+                        <div ng-show="modalForm.memoryAllocated.$error.min">Memory Allocated must be greater than 0.</div>
                     </div>
                 </td>
             </tr>
@@ -70,7 +73,7 @@
                 <td><strong>Start Date:</strong>&nbsp;<sup><i style="color: red;font-size:0.5em;" class="fa fa-asterisk"></i></sup></td>
                 <td>
                     <div class="input-group">
-                        <input type="text" id="startDate" name="startDate" class="form-control" datepicker-popup="[[format]]" ng-model="data.allocation.start" is-open="open.start" min-date="minStartDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" ng-disabled="true" close-text="Close" />
+                        <input type="text" id="startDate" name="startDate" class="form-control" datepicker-popup="[[format]]" ng-model="data.allocation.start" is-open="open.start" min-date="minStartDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" ng-disabled="true" close-text="Close" placeholder="Use calendar icon on right to select"/>
                         <span class="input-group-btn">
                           <button type="button" class="btn btn-default"
                             ng-click="open($event,'start')">
@@ -78,7 +81,7 @@
                           </button>
                         </span>
                     </div>
-                    <div style="color:red" ng-show="modalForm.startDate.$dirty && modalForm.startDate.$invalid">
+                    <div style="color:red" ng-show="modalForm.$dirty && modalForm.startDate.$invalid">
                         <div ng-show="modalForm.startDate.$error.required">Start Date is required.</div>
                     </div>
                 </td>
@@ -87,7 +90,7 @@
                 <td><strong>End Date:</strong>&nbsp;<sup><i style="color: red;font-size:0.5em;" class="fa fa-asterisk"></i></sup></td>
                 <td>
                     <div class="input-group">
-                        <input type="text" id="endDate" name="endDate" class="form-control" datepicker-popup="[[format]]" ng-model="data.allocation.end" is-open="open.end" min-date="data.allocation.start" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" ng-disabled="true" close-text="Close" />
+                        <input type="text" id="endDate" name="endDate" class="form-control" datepicker-popup="[[format]]" ng-model="data.allocation.end" is-open="open.end" min-date="data.allocation.start" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" ng-disabled="true" close-text="Close" placeholder="Use calendar icon on right to select"/>
                         <span class="input-group-btn">
                           <button type="button" class="btn btn-default"
                             ng-click="open($event,'end')" ng-disabled="modalForm.startDate.$invalid">
@@ -95,7 +98,7 @@
                           </button>
                         </span>
                     </div>
-                    <div style="color:red" ng-show="modalForm.endDate.$dirty && modalForm.endDate.$invalid">
+                    <div style="color:red" ng-show="modalForm.$dirty && modalForm.endDate.$invalid">
                         <div ng-show="modalForm.endDate.$error.required">End Date is required.</div>
                     </div>
                 </td>
@@ -104,7 +107,7 @@
                 <td><strong>Decision Summary</strong>&nbsp;<sup><i style="color: red;font-size:0.5em;" class="fa fa-asterisk"></i></sup></td>
                 <td>
                     <textarea ng-model="data.allocation.decisionSummary" name="decisionSummary" rows="4" cols="53" ng-required="true"></textarea>
-                    <div style="color:red" ng-show="modalForm.decisionSummary.$dirty && modalForm.decisionSummary.$invalid">
+                    <div style="color:red" ng-show="modalForm.$dirty && modalForm.decisionSummary.$invalid">
                         <div ng-show="modalForm.decisionSummary.$error.required">Decision summary is required.</div>
                     </div>
                 </td>
@@ -112,8 +115,8 @@
         </table>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-success" ng-click="ok()" ng-if="data.type == 'approve'" ng-disabled="modalForm.$invalid">Approve</button>
-        <button type="submit" class="btn btn-danger" ng-click="ok()" ng-if="data.type == 'reject'" ng-disabled="modalForm.$invalid">Reject</button>
+        <button type="submit" class="btn btn-success" ng-click="ok(modalForm)" ng-if="data.type == 'approve'">Approve</button>
+        <button type="submit" class="btn btn-danger" ng-click="ok(modalForm)" ng-if="data.type == 'reject'">Reject</button>
         <button class="btn btn-info" ng-click="cancel()">Cancel</button>
     </div>
 </form>

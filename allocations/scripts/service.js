@@ -279,8 +279,15 @@ angular
                     })
                     .then(function(response) {
                             NotificationFactory.removeLoading(msgKey);
-                            if (response.data.status === 'error') {
+                            console.log('response', response);
+                            if (!response || !response.data) {
                                 NotificationFactory.addMessage(msgKey, errorMsg, 'danger');
+                                return null;
+                            }
+                            else if (response.data.status === 'error') {
+                                for(var key in response.data.messages){
+                                    NotificationFactory.addMessage(msgKey, response.data.messages[key], 'danger');
+                                }
                                 return null;
                             } else {                                
                                 NotificationFactory.addMessage(msgKey, 'This allocation request is approved successfully.', 'success');
