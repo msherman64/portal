@@ -27,8 +27,7 @@ djangocms-blog
 
 httpretty
 mock
-MySQL-python
-opbeat
+mysqlclient
 Pillow
 ply
 python-openid
