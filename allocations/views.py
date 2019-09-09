@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -243,7 +244,7 @@ def approval( request ):
                 errors['message'] = 'An unexpected error occurred. If this problem persists please create a help ticket.'
 
         else:
-            logger.info( 'Request data failed validation. %s', errors.values())
+            logger.info( 'Request data failed validation. %s', list(errors.values()))
             status = 'error'
 
     else:

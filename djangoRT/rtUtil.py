@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import rt
 from django.conf import settings
 from datetime import datetime

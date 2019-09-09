@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.core.serializers.json import Serializer
 from appliance_catalog.models import Appliance, Keyword
 

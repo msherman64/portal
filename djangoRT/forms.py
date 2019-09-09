@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django import forms
 from django.core.validators import validate_email
 from captcha.fields import CaptchaField

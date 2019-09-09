@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.conf.urls import patterns, include, url
 from g5k_discovery.views import DiscoveryView, g5k_json, g5k_html, node_view, node_data
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns

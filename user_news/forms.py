@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.forms import ModelForm, Select, BooleanField
 from user_news.models import News, Event, Outage, OutageUpdate
 

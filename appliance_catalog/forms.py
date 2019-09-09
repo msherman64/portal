@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.forms import ModelForm, CharField, TextInput, ImageField
 from django.core.validators import validate_email, URLValidator
 from django.core.exceptions import ValidationError

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from chameleon_token.decorators import token_required
 from django.core.urlresolvers import reverse
 from django.contrib import messages

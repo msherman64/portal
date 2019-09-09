@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.db import models
 
 QUEUES = (('kvm@tacc', 'kvm@tacc'),('chi@tacc', 'chi@tacc'),('chi@uc', 'chi@uc'))

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from chameleon.decorators import terms_required
@@ -11,11 +12,11 @@ from datetime import datetime
 from django.conf import settings
 from pytas.http import TASClient
 from pytas.models import Project
-from models import ProjectExtras
+from .models import ProjectExtras
 from projects.serializer import ProjectExtrasJSONSerializer
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST
-from forms import ProjectCreateForm, ProjectAddUserForm, AllocationCreateForm, EditNicknameForm
+from .forms import ProjectCreateForm, ProjectAddUserForm, AllocationCreateForm, EditNicknameForm
 from django.db import IntegrityError
 import re
 import logging
@@ -26,6 +27,7 @@ from keystoneauth1 import session
 from django.conf import settings
 import uuid
 import sys
+import six
 
 logger = logging.getLogger('projects')
 
@@ -154,16 +156,16 @@ def view_project(request, project_id):
             project.has_rejected_allocations = True
 
 
-        if a.start and isinstance(a.start, basestring):
+        if a.start and isinstance(a.start, six.string_types):
             a.start = datetime.strptime(a.start, '%Y-%m-%dT%H:%M:%SZ')
         if a.dateRequested:
-            if isinstance(a.dateRequested, basestring):
+            if isinstance(a.dateRequested, six.string_types):
                 a.dateRequested = datetime.strptime(a.dateRequested, '%Y-%m-%dT%H:%M:%SZ')
         if a.dateReviewed:
-            if isinstance(a.dateReviewed, basestring):
+            if isinstance(a.dateReviewed, six.string_types):
                 a.dateReviewed = datetime.strptime(a.dateReviewed, '%Y-%m-%dT%H:%M:%SZ')
         if a.end:
-            if isinstance(a.end, basestring):
+            if isinstance(a.end, six.string_types):
                 a.end = datetime.strptime(a.end, '%Y-%m-%dT%H:%M:%SZ')
 
             days_left = (a.end - datetime.today()).days
@@ -231,7 +233,7 @@ def update_user_keystone_project_membership(username, tas_project, add_member=Tr
     member_role = ks_client.roles.list(name='_member_',domain=domain_id)[0]
     # now get project by charge_code:
     project_list = ks_client.projects.list(domain=domain_id)
-    project = filter(lambda this: getattr(this, 'charge_code', None) == tas_project.chargeCode, project_list)
+    project = [this for this in project_list if getattr(this, 'charge_code', None) == tas_project.chargeCode]
     if project and project[0]:
         project = project[0]
     else:
@@ -266,7 +268,7 @@ def create_ks_project(tas_project, ks_client):
 def get_keystone_user(ks_client, username):
     try:
         logger.debug('Getting user from keystone: ' + username)
-        user = filter(lambda this: this.name==username, ks_client.users.list())
+        user = [this for this in ks_client.users.list() if this.name==username]
         if user and user[0]:
             logger.debug('User found in keystone : ' + username)
             return user[0]

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
@@ -51,7 +52,7 @@ def update_ks_password(request):
             project_id=settings.OPENSTACK_SERVICE_PROJECT_ID, project_name='services', user_domain_id="default")
         sess = session.Session(auth=auth, timeout=5)
         ks = v3_ksclient.Client(session=sess, region_name=settings.OPENSTACK_TACC_REGION)
-        user = filter(lambda this: this.name==request.POST.get('username'), ks.users.list())
+        user = [this for this in ks.users.list() if this.name==request.POST.get('username')]
         if user:
             ks.users.update(user=user[0], password=request.POST.get('password'))
             logger.info('Password sync to keystone successful for user: ' + request.POST.get('username'))

@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from cms.sitemaps import CMSSitemap
 from django.conf.urls import patterns, include, url
 from django.core.urlresolvers import reverse_lazy
@@ -6,7 +7,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.views.generic import RedirectView
 from user_news.views import OutageListView, OutageDetailView, OutageFeed
-import views
+from . import views
 
 urlpatterns = patterns(
         '',

@@ -1,5 +1,6 @@
 """View Decorators for termsandconditions module"""
-import urlparse
+from __future__ import absolute_import
+import six.moves.urllib.parse
 from functools import wraps
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
@@ -24,11 +25,11 @@ def terms_required(terms_slug):
 
             currentPath = request.META['PATH_INFO']
             accept_path = reverse('tc_accept_specific_version_page', args=[terms.slug, terms.version_number])
-            login_url_parts = list(urlparse.urlparse(accept_path))
+            login_url_parts = list(six.moves.urllib.parse.urlparse(accept_path))
             querystring = QueryDict(login_url_parts[4], mutable=True)
             querystring['returnTo'] = currentPath
             login_url_parts[4] = querystring.urlencode(safe='/')
-            return HttpResponseRedirect(urlparse.urlunparse(login_url_parts))
+            return HttpResponseRedirect(six.moves.urllib.parse.urlunparse(login_url_parts))
 
         return _wrapped_view
     return decorator

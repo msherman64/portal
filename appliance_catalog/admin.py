@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.contrib import admin
 import django.forms as forms
 from .models import Keyword, Appliance, ApplianceTagging

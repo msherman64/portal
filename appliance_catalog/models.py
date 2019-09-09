@@ -1,12 +1,14 @@
+from __future__ import absolute_import
 from django.conf import settings
 from django.db import models
+import six
 
 
 class Keyword(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return six.text_type(self).encode('utf-8')
 
     def __unicode__(self):
         return self.name
@@ -46,7 +48,7 @@ class Appliance(models.Model):
     needs_review = models.BooleanField(default=True, blank=True)
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return six.text_type(self).encode('utf-8')
 
     def __unicode__(self):
         return self.name

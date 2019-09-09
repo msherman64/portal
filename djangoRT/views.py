@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.servers.basehttp import FileWrapper
@@ -41,7 +42,7 @@ def ticketdetail(request, ticketId):
 
     # remove bogus "untitled" attachments
     for history in ticket_history:
-        history['Attachments'] = filter(lambda a: not a[1].startswith('untitled ('), history['Attachments'])
+        history['Attachments'] = [a for a in history['Attachments'] if not a[1].startswith('untitled (')]
 
     return render(request, 'djangoRT/ticketDetail.html', { 'ticket' : ticket, 'ticket_history' : ticket_history, 'ticket_id' : ticketId, 'hasAccess' : rt.hasAccess(ticketId, request.user.email) })
 

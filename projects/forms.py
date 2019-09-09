@@ -1,8 +1,9 @@
+from __future__ import absolute_import
 from django import forms
 from pytas.http import TASClient
 from django.core.urlresolvers import reverse_lazy
 from django.utils.functional import lazy
-from models import ProjectExtras
+from .models import ProjectExtras
 
 RESEARCH = 0
 STARTUP = 2

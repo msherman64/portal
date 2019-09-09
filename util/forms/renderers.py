@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from bootstrap3.renderers import FieldRenderer
 from bootstrap3.text import text_value
 

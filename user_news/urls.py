@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.conf.urls import patterns, include, url
 from django.core.urlresolvers import reverse_lazy
 from user_news.views import UserNewsListView, UserNewsDetailView, UserNewsRedirectView, UserNewsFeed, OutageListView, OutageDetailView, OutageFeed

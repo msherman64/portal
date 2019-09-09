@@ -1,8 +1,10 @@
+from __future__ import absolute_import
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from optparse import make_option
 from pytas.http import TASClient
+from six.moves import input
 
 class Command(BaseCommand):
     help = 'Sync local user emails with TAS information. ' \
@@ -63,7 +65,7 @@ class Command(BaseCommand):
                 self._run_update(usersToUpdate)
             else:
                 self.stdout.write(self.style.NOTICE('%s users will have their emails synced with TAS. Continue?' % len(usersToUpdate)))
-                confirm = raw_input('Y/N: ')
+                confirm = input('Y/N: ')
 
                 if confirm == 'Y' or confirm == 'y':
                     self.stdout.write(self.style.NOTICE('Updating user emails'))

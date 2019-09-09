@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from chameleon_token.decorators import token_required
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required

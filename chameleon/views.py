@@ -1,10 +1,11 @@
+from __future__ import absolute_import
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from user_news.models import Outage
 from djangoRT import rtUtil
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 import logging
 import chameleon.os_login as login
 from tas import auth as tas_auth

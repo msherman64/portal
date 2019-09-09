@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -19,6 +20,7 @@ from djangoRT import rtUtil, rtModels
 import re
 import logging
 import json
+import six
 
 logger = logging.getLogger(__name__)
 
@@ -281,4 +283,4 @@ def register(request):
 
 def _clean_registration_data(registration_data):
     hide_keys = ['password', 'confirm_password', 'confirmPassword']
-    return dict((k, v) for k, v in registration_data.iteritems() if k not in hide_keys)
+    return dict((k, v) for k, v in six.iteritems(registration_data) if k not in hide_keys)

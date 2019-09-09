@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from menus.base import NavigationNode
 from cms.menu_bases import CMSAttachMenu
 from menus.menu_pool import menu_pool
