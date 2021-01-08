@@ -48,7 +48,7 @@ def get_proj_alloc_json(request, **kwargs):
     try:
         mapper = ProjectAllocationMapper(request)
         resp = mapper.get_all_projects(kwargs)
-        logger.debug( 'Total projects: %s', len(resp) )
+        logger.debug("Total projects: %s", len(resp))
         return resp
     except Exception as e:
         logger.exception('Error loading chameleon projects')
