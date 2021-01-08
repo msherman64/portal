@@ -39,15 +39,25 @@ def denied( request ):
 @login_required
 @user_passes_test(allocation_admin_or_superuser, login_url='/admin/allocations/denied/')
 def view( request ):
+
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
+
+def get_proj_alloc_json(request, **kwargs):
     try:
         mapper = ProjectAllocationMapper(request)
-        resp = mapper.get_all_projects()
+        resp = mapper.get_all_projects(kwargs)
         logger.debug( 'Total projects: %s', len(resp) )
+        return resp
     except Exception as e:
         logger.exception('Error loading chameleon projects')
         messages.error( request, e[0] )
         raise Exception('Error loading chameleon projects')
-    return HttpResponse(json.dumps(resp), content_type="application/json")
+    
+
+
+
 
 @login_required
 @user_passes_test(allocation_admin_or_superuser, login_url='/admin/allocations/denied/')
