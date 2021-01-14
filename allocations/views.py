@@ -50,6 +50,14 @@ def view( request ):
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 @login_required
+@user_passes_test(allocation_admin_or_superuser,
+                  login_url='/admin/allocations/denied/')
+def return_json(request):
+    mapper = ProjectAllocationMapper(request)
+    resp = mapper.get_all_projects()
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
+@login_required
 @user_passes_test(allocation_admin_or_superuser, login_url='/admin/allocations/denied/')
 def user_select( request ):
     user = request.user
