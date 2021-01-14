@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out source repository
+        uses: actions/checkout@v2
       - name: Set up Python environment
         uses: actions/setup-python@v2
       - uses: reviewdog/action-black@v2
@@ -28,6 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out source repository
+        uses: actions/checkout@v2
       - name: Set up Python environment
         uses: actions/setup-python@v2
       - name: flake8 Lint
