@@ -34,7 +34,7 @@ def denied( request ):
     if user:
         logger.debug( 'Denying allocation approval view to: %s', user.username )
     context = {}
-    return render(request, 'allocations/denied.html', context)
+    return render(request, "allocations/denied.html", context)
 
 
 def get_all_alloc(request):
