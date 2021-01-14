@@ -52,7 +52,7 @@ def get_all_alloc(request):
     try:
         mapper = ProjectAllocationMapper(request)
         resp = mapper.get_all_projects()
-        logger.debug('Total projects: %s', len(resp))
+        logger.debug("Total projects: %s", len(resp))
     except Exception as e:
         logger.exception('Error loading chameleon projects')
         messages.error(request, e[0])
