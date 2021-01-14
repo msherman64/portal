@@ -11,7 +11,7 @@ jobs:
   #   nofilter: everything in repo
   # level: [info,warning,error]
   black:
-    name: runner / black, flake8
+    name: runner / black
     runs-on: ubuntu-latest
     steps:
       - name: Check out source repository
@@ -23,6 +23,13 @@ jobs:
           reporter: github-pr-review
           filter_mode: added
           level: warning
+  flake8:
+    name: runner / flake8
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source repository
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
       - name: flake8 Lint
         uses: reviewdog/action-flake8@v3
         with:
