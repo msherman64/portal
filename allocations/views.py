@@ -54,7 +54,7 @@ def get_all_alloc(request):
         resp = mapper.get_all_projects()
         logger.debug("Total projects: %s", len(resp))
     except Exception as e:
-        logger.exception('Error loading chameleon projects')
+        logger.exception("Error loading chameleon projects")
         messages.error(request, e[0])
         raise Exception('Error loading chameleon projects')
     return json.dumps(resp)
