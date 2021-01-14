@@ -64,13 +64,11 @@ def get_all_alloc(request):
 @user_passes_test(allocation_admin_or_superuser, login_url="/admin/allocations/denied/")
 def view(request):
     """Return http response of get_all_alloc. Matches Template."""
-    return HttpResponse(get_all_alloc(request),
-                        content_type='application/json')
+    return HttpResponse(get_all_alloc(request), content_type="application/json")
 
 
 @login_required
-@user_passes_test(allocation_admin_or_superuser,
-                  login_url='/admin/allocations/denied/')
+@user_passes_test(allocation_admin_or_superuser, login_url="/admin/allocations/denied/")
 def return_json(request):
     """Return http response of get_all_alloc. Does not match Template."""
     return HttpResponse(get_all_alloc(request),
