@@ -61,8 +61,7 @@ def get_all_alloc(request):
 
 
 @login_required
-@user_passes_test(allocation_admin_or_superuser,
-                  login_url='/admin/allocations/denied/')
+@user_passes_test(allocation_admin_or_superuser, login_url="/admin/allocations/denied/")
 def view(request):
     """Return http response of get_all_alloc. Matches Template."""
     return HttpResponse(get_all_alloc(request),
