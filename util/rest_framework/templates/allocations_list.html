@@ -1,0 +1,103 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static cms_tags staticfiles pipeline %}
+
+{% block meta %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% endblock %}
+
+{% block script %}
+{{block.super}}
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+    integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+    crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block extrastyle %}
+{{block.super}}
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css"
+    integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a> &rsaquo; {% trans 'Manage Allocations' %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main" class="container-fluid">
+    <div class="page-header">
+        <h2>Allocations</h2>
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pager">
+            {% if previous %}
+            <li class="previous"><a href="{{ previous }}"><span aria-hidden="true">&larr;</span>Newer </a></li>
+            {% endif %}
+            {% if next %}
+            <li class="next"><a href="{{ next }}"> Older<span aria-hidden="true">&rarr;</span></a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th width="auto">id</th>
+                <th width="auto">project</th>
+                <th width="auto">status</th>
+                <th width="auto">su usage</th>
+                <th width="auto">start</th>
+                <th width="auto">end</th>
+                <th width="auto">requestor</th>
+                <th width="auto">date requested</th>
+                <th width="auto">reviewer</th>
+                <th width="auto">date reviewed</th>
+            </tr>
+        </thead>
+        <tbody class="cc-allocations">
+            {% for allocation in results %}
+            {% now "Y-m-d" as current_date %}
+            <tr>
+                <td>{{allocation.id}}</td>
+                <td>{{allocation.charge_code}}</td>
+                <td>{{allocation.status}}</td>
+                <td>
+                    {% if allocation.su_used is not None %}
+                    <div class="progress" style="margin-bottom: 0;">
+                        <div class="progress-bar bg-warning" role="progressbar"
+                            style="width:{% widthratio allocation.su_used allocation.su_allocated 100 %}%">
+                        </div>
+                    </div>
+                    {% elif allocation.status == "active"%}
+                    <strong>Warning, usage not fetched.</strong>
+                    {% endif %}
+                </td>
+                <td>{{ allocation.start_date }}</td>
+                <td>{{ allocation.expiration_date }}</td>
+                <td><a href="mailto:{{allocation.requestor.email}}">{{allocation.requestor.username}}</a></td>
+                <td>{{ allocation.date_requested }}</td>
+                <td><a href="mailto:{{allocation.reviewer.email}}">{{allocation.reviewer.username}}</a></td>
+                <td>{{ allocation.date_reviewed }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation">
+        <ul class="pager">
+            {% if previous %}
+            <li class="previous"><a href="{{ previous }}"><span aria-hidden="true">&larr;</span>Newer </a></li>
+            {% endif %}
+            {% if next %}
+            <li class="next"><a href="{{ next }}"> Older<span aria-hidden="true">&rarr;</span></a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

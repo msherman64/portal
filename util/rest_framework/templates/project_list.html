@@ -1,0 +1,118 @@
+{% extends "rest_framework/base.html" %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header">
+        <h2>Projects and Allocations</h2>
+    </div>
+
+    <nav aria-label="Page navigation">
+        <ul class="pager">
+            {% if previous %}
+            <li class="previous"><a href="{{ previous }}"><span aria-hidden="true">&larr;</span>Newer </a></li>
+            {% endif %}
+            {% if next %}
+            <li class="next"><a href="{{ next }}"> Older<span aria-hidden="true">&rarr;</span></a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    {% for project in results %}
+    <div class="panel-group cc-project">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{project.charge_code}}&ndash;{{project.title}}
+                    <small><a href="/user/projects/{{ project.id }}" target="_blank">View
+                            Project&rarr;</a></small>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-1"><strong>PI:</strong></div>
+                    <div class="col-md-2">
+                        {{ project.pi.first_name }} {{ project.pi.last_name }}
+                        <a href="mailto://#">{{ project.pi.email }}</a><br>
+                        Username: {{ project.pi.username }}
+                    </div>
+                    <div class="col-md-2 h5">Project Type: {{ project.project_type }}</div>
+                    <div class="col-md-auto h5">Field of Science: {{ project.field }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 h5">Abstract</div>
+                    <div class="col-md-11">
+                        <div class="well">{{ project.description }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th id="s1">state</th>
+                        <th id="u">su usage</th>
+                        <th id="s2">start-end</th>
+                        <th id="r1">request</th>
+                    </tr>
+                </thead>
+                {% for allocation in project.allocations %}
+                {% with su_used=allocation.su_used su_alloc=allocation.su_allocated status=allocation.status %}
+                <tbody class="cc-allocation">
+                    <tr>
+                        <td headers="s1 s">
+                            <span 
+                            {% if status == "pending" %}
+                            class="label label-warning"
+                            {% elif status == "approved" %}
+                            class="label label-info"
+                            {% elif status == "active" %}
+                            class="label label-success"
+                            {% elif status == "inactive" %}
+                            class="label label-default"
+                            {% elif status == "rejected" %}
+                            class="label label-danger"
+                            {% else %}
+                            class="label label-default"
+                            {% endif %}
+                            >
+                            {{status}}
+                            </span>
+                        </td>
+                        <td headers="u">
+                        <meter value="{{su_used}}" min="0" max="{{su_alloc}}">
+                            {{su_used}} out of {{su_alloc}}
+                        </meter>
+                        </td>
+                        {% now "Y-m-d" as current_date %}
+                        <td headers="s2 s">
+                            {% if current_date >= allocation.start_date and current_date <= allocation.expiration_date %}
+                            <strong>{{ allocation.start_date }} &mdash; {{ allocation.expiration_date }}</strong>
+                            {% else %}
+                            {{ allocation.start_date }} &mdash; {{ allocation.expiration_date }}
+                            {% endif %}
+                            
+                        </td>
+                        <td headers="r1 r"><a
+                                href="{{allocation.requestor.email}}">{{allocation.requestor.username}}</a>
+                        </td>
+                    </tr>
+                </tbody>
+                {% endwith %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+
+    <nav aria-label="Page navigation">
+        <ul class="pager">
+            {% if previous %}
+            <li class="previous"><a href="{{ previous }}"><span aria-hidden="true">&larr;</span>Newer </a></li>
+            {% endif %}
+            {% if next %}
+            <li class="next"><a href="{{ next }}"> Older<span aria-hidden="true">&rarr;</span></a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% endblock %}
