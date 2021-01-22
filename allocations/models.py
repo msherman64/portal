@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.db import models
 import json
 import logging
@@ -28,3 +29,12 @@ class Allocation(models.Model):
     start_date = models.DateTimeField(null=True)
     su_allocated = models.FloatField(null=True)
     su_used = models.FloatField(null=True)
+
+    class Meta:
+        get_latest_by = "date_requested"
+
+    def __str__(self):
+        return "%s" % (self.id)
+
+    def get_absolute_url(self):
+        return reverse("allocations.views.details", args=[str(self)])
