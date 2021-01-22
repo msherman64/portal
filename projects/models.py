@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 import json
 import logging
 from django.conf import settings
@@ -9,9 +10,15 @@ logger = logging.getLogger("projects")
 class Type(models.Model):
     name = models.CharField(max_length=255, blank=False, unique=True)
 
+    def __str__(self):
+        return "%s" % (self.name)
+
 
 class Field(models.Model):
     name = models.CharField(max_length=255, blank=False, unique=True)
+
+    def __str__(self):
+        return "%s" % (self.name)
 
 
 class FieldHierarchy(models.Model):
@@ -30,6 +37,15 @@ class Project(models.Model):
     nickname = models.CharField(max_length=255, blank=False, unique=True)
     field = models.ForeignKey(Field, related_name="project_field", null=True)
     charge_code = models.CharField(max_length=50, blank=False)
+
+    class Meta:
+        get_latest_by = "allocations__latest"
+
+    def __str__(self):
+        return "%s" % (self.charge_code)
+
+    def get_absolute_url(self):
+        return reverse("projects.views.details", args=[str(self)])
 
 
 class ProjectExtras(models.Model):
