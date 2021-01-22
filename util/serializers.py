@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from projects.models import Project
 from allocations.models import Allocation
 
-from allocations.allocations_api import BalanceServiceClient
+# from allocations.allocations_api import BalanceServiceClient
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,28 +19,18 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AllocationSerializer(serializers.ModelSerializer):
-    requestor = UserSerializer()
-    reviewer = UserSerializer()
-    charge_code = serializers.CharField(source="project.charge_code")
+    """Serialize Allocation object"""
 
-    start_date = serializers.DateTimeField(
-        format="%Y-%m-%d",
-    )
-    expiration_date = serializers.DateTimeField(
-        format="%Y-%m-%d",
-    )
-    date_requested = serializers.DateTimeField(
-        format="%Y-%m-%d",
-    )
-    date_reviewed = serializers.DateTimeField(
-        format="%Y-%m-%d",
-    )
+    """
+    keys in the array "fields" can be queried in URL by "?key=value"
+    Their format can be overridden by defining it outside the "Meta" class.
+    """
 
     class Meta:
         model = Allocation
         fields = [
             "id",
-            "charge_code",
+            "project",
             "status",
             "start_date",
             "expiration_date",
@@ -56,11 +46,13 @@ class AllocationSerializer(serializers.ModelSerializer):
         ]
 
 
+class NestedAllocationSerializer(AllocationSerializer):
+    requestor = UserSerializer()
+    reviewer = UserSerializer()
+
+
 class ProjectSerializer(serializers.ModelSerializer):
-    project_type = serializers.CharField(source="type.name")
-    field = serializers.CharField(source="field.name")
-    pi = UserSerializer()
-    allocations = AllocationSerializer(many=True)
+    """Serialize project object"""
 
     class Meta:
         model = Project
@@ -68,9 +60,19 @@ class ProjectSerializer(serializers.ModelSerializer):
             "charge_code",
             "title",
             "nickname",
+            "type",
             "project_type",
             "field",
             "description",
             "pi",
             "allocations",
         ]
+
+
+class NestedProjectSerializer(ProjectSerializer):
+    """Serialize project object, recursively nesting values"""
+
+    project_type = serializers.CharField(source="type.name")
+    field = serializers.CharField(source="field.name")
+    pi = UserSerializer()
+    allocations = NestedAllocationSerializer(many=True)

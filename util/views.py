@@ -1,5 +1,3 @@
-from django.db.models import Prefetch
-
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.authentication import SessionAuthentication
@@ -8,13 +6,16 @@ from rest_framework.generics import ListAPIView
 from rest_framework.pagination import LimitOffsetPagination
 
 from rest_framework.renderers import (
-    TemplateHTMLRenderer,
     BrowsableAPIRenderer,
     JSONRenderer,
 )
 
-from .serializers import AllocationSerializer, ProjectSerializer
-from .querysets import AllocationQuerySets, ProjectQuerySets
+from .serializers import (
+    AllocationSerializer,
+    ProjectSerializer,
+    NestedProjectSerializer,
+)
+from .querysets import CCQuerySets
 from .filters import AllocationFilter, ProjectFilter
 
 
@@ -40,16 +41,14 @@ class AllocationAppView(ListBaseView):
     # Pagination breaks the app
     pagination_class = None
     # Force only JSON renderer for app compatibility
-    renderer_classes = [JSONRenderer]
+    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
 
-    serializer_class = ProjectSerializer
+    serializer_class = NestedProjectSerializer
     filterset_class = ProjectFilter
 
     def get_queryset(self):
-        alloc_qs = AllocationQuerySets.orderedAllocationsQuerySet(self)
-        prefetch_qs = Prefetch("allocations", queryset=alloc_qs)
-        project_qs = ProjectQuerySets().orderedProjectsQuerySet()
-        return project_qs.prefetch_related(prefetch_qs)
+        qs = CCQuerySets()
+        return qs.orderedProjects()
 
 
 class AllocationListView(ListBaseView):
@@ -57,8 +56,8 @@ class AllocationListView(ListBaseView):
     filterset_class = AllocationFilter
 
     def get_queryset(self):
-        alloc_qs = AllocationQuerySets.orderedAllocationsQuerySet(self)
-        return alloc_qs
+        qs = CCQuerySets()
+        return qs.orderedAllocations()
 
 
 class ProjectListView(ListBaseView):
@@ -66,7 +65,5 @@ class ProjectListView(ListBaseView):
     filterset_class = ProjectFilter
 
     def get_queryset(self):
-        alloc_qs = AllocationQuerySets.orderedAllocationsQuerySet(self)
-        prefetch_qs = Prefetch("allocations", queryset=alloc_qs)
-        project_qs = ProjectQuerySets().orderedProjectsQuerySet()
-        return project_qs.prefetch_related(prefetch_qs)
+        qs = CCQuerySets()
+        return qs.orderedProjects()
