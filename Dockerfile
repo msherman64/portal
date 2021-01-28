@@ -1,13 +1,27 @@
+# Docker Build Args
+# https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
+ARG NODE_VER=lts
 ARG PY_IMG_TAG=3.7.9-stretch
-FROM python:${PY_IMG_TAG}
+
+# Build Frontend Client
+FROM node:${NODE_VER} as node-client
+# Avoid rebuilding node deps unnecessarily
+WORKDIR /project
+COPY package.json package.json
+COPY yarn.lock yarn.lock
+RUN yarn install
+# Build static JS assets
+COPY . /project
+RUN yarn build --production
+
+# Build Django Application
+FROM python:${PY_IMG_TAG} as portal
 
 # Set shell to use for run commands
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Install repos for node6.x. 
-# WARNING: EOL on 2019-04-30
-# https://github.com/nodejs/Release#end-of-life-releases
-ARG NODE_VER=lts
+# Install repos for node
+ARG NODE_VER
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VER}.x | bash -
 
 # Install apt packages
@@ -48,7 +62,7 @@ WORKDIR /project
 # translation messages, if necessary
 RUN python manage.py compilemessages
 # copy compiled JS assets
-COPY --from=client /project/static/vue /project/static/vue
-COPY --from=client /project/webpack-stats.json /project/webpack-stats.json
+COPY --from=node-client /project/static/vue /project/static/vue
+COPY --from=node-client /project/webpack-stats.json /project/webpack-stats.json
 
 EXPOSE 80 443
