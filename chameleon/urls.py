@@ -50,7 +50,7 @@ urlpatterns = (
     [
         # admin urls
         url(r"^admin/login/", AdminOIDCLogin.as_view()),
-        url(r"^admin/", include(admin.site.urls)),
+        url(r"^admin/", admin.site.urls),
         url(r"^admin/impersonate/", include("impersonate.urls")),
         url(
             r"^admin/allocations/",
@@ -145,7 +145,7 @@ urlpatterns = (
         # /news is bound to user_news app via CMS integration
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    + router.get_urls()
+    # + router.get_urls()
 )
 
 urlpatterns += router.urls
