@@ -154,7 +154,7 @@ INSTALLED_APPS = (
     "djangocms_blog",
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     "djng.middleware.AngularUrlMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -174,7 +174,7 @@ MIDDLEWARE_CLASSES = (
     "cms.middleware.language.LanguageCookieMiddleware",
     "impersonate.middleware.ImpersonateMiddleware",
     "mozilla_django_oidc.middleware.RefreshOIDCAccessToken",
-)
+]
 
 ROOT_URLCONF = "chameleon.urls"
 
