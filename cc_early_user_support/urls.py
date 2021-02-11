@@ -5,8 +5,8 @@ from . import views
 app_name = "cc_early_user_support"
 
 urlpatterns = [
-    url(r"^$", views.index, name="index"),
-    url(r"^program/(?P<id>\d+)/$", views.view_program, name="program"),
+    url(r"^", views.index, name="index"),
+    url(r"^program/(?P<id>\d+)/", views.view_program, name="program"),
     url(
         r"^program/(?P<id>\d+)/participate/$",
         views.request_to_participate,
