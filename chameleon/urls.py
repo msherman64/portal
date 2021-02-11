@@ -2,6 +2,7 @@ import logging
 
 from chameleon import os_login as chameleon_os_login
 from chameleon import views as chameleon_views
+from chameleon.os_login import CustomLogin, CustomLogout
 from chameleon_mailman import views as chameleon_mailman_views
 from cms.sitemaps import CMSSitemap
 from django.conf import settings
@@ -68,8 +69,8 @@ urlpatterns = (
             name="django.contrib.sitemaps.views.sitemap",
         ),
         # custom urls
-        url(r"^login/", chameleon_os_login.custom_login, name="login"),
-        url(r"^logout/", chameleon_os_login.custom_logout, name="logout"),
+        url(r"^login/", CustomLogin.as_view(), name="login"),
+        url(r"^logout/", CustomLogout.as_view(), name="logout"),
         url(r"^register/", chameleon_views.OIDCRegisterView.as_view(), name="register"),
         # Rollout endpoints for new login
         url(
