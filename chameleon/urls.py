@@ -145,7 +145,7 @@ urlpatterns = (
         # /news is bound to user_news app via CMS integration
     ]
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    # + router.get_urls()
+    + router.get_urls()
 )
 
 urlpatterns += router.urls
